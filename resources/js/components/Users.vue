@@ -16,21 +16,29 @@
               <div class="card-body table-responsive p-0">
                 <table class="table table-hover">
                   <thead>
+
                     <tr>
-                      <th>Id</th>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Type</th>
-                      <th>Modify</th>
-                    </tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Type</th>
+                        <th>Modify</th>
+                  </tr>
+                    
+                 
+                  
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>183</td>
-                      <td>John Doe</td>
-                      <td>11-7-2014</td>
-                      <td><span class="tag tag-success">Approved</span></td>
-                      <td>
+                    
+
+                    <tr v-for="user in users.data" :key="user.id">
+
+                    <td>{{user.id}}</td>
+                    <td>{{user.name}}</td>
+                    <td>{{user.email}}</td>
+                    <td>{{user.type}}</td>
+
+                    <td>
                         <a href="#" @click="editModal(user)">
                             <i class="fa fa-edit blue"></i>
                         </a>
@@ -40,7 +48,8 @@
                         </a>
 
                     </td>
-                    </tr>
+                  </tr>
+
                   </tbody>
                 </table>
               </div>
@@ -79,6 +88,26 @@
         class="form-control" :class="{ 'is-invalid': form.errors.has('email') }">
        <has-error :form="form" field="email"></has-error>
        </div>
+
+        <div class="form-group">
+        <label>Bio</label>
+            <textarea v-model="form.bio" name="bio" id="bio"
+            placeholder="Short bio for user (Optional)"
+            class="form-control" :class="{ 'is-invalid': form.errors.has('bio') }"></textarea>
+            <has-error :form="form" field="bio"></has-error>
+        </div>
+
+
+        <div class="form-group">
+        <label>Type</label>
+            <select name="type" v-model="form.type" id="type" class="form-control" :class="{ 'is-invalid': form.errors.has('type') }">
+                <option value="">Select User Role</option>
+                <option value="admin">Admin</option>
+                <option value="user">Standard User</option>
+                <option value="author">Author</option>
+            </select>
+            <has-error :form="form" field="type"></has-error>
+        </div>
 
        <div class="form-group">
        <label>Password</label>
@@ -125,29 +154,50 @@
 <script>
 
 import Form from 'vform'; 
+import Swal from 'sweetalert2'; 
 
     export default {
         
          data() {
             return {
+                users : {},
                 form: new Form({
                     
                     name : '',
                     email: '',
+                    bio: '',
+                    type: '',
                     password: ''
+                    
                 })
             }
         },
         methods: {
 
-         createUser(){
-                
-                this.form.post('api/user');
-                
-            }
+        loadUsers(){
+        
+         axios.get("api/user").then(({ data }) => (this.users = data));
+
         },
-        mounted() {
-            console.log('Component mounted.')
+         createUser(){
+                this.$Progress.start();
+                this.form.post('api/user');
+
+                $('#addNew').modal('hide');
+
+
+                Toast.fire({
+                type: 'success',
+                title: 'User Created in successfully'
+                })
+
+                this.$Progress.finish();
+        }
+        
+        },
+        created() {
+            this.loadUsers();
+            setInterval(() => this.loadUsers(), 3000);
         }
     }
 </script>

@@ -17,6 +17,7 @@ class UserController extends Controller
     public function index()
     {
         //
+        return User::latest()->paginate(5);
     }
 
     /**
@@ -31,13 +32,17 @@ class UserController extends Controller
         $this->validate($request,[
             'name' => 'required|string|max:191',
             'email' => 'required|string|email|max:191|unique:users',
-            'password' => 'required|string|min:6'
+            'password' => 'required|string|min:6',       
+            'bio' => 'required|string|max:191',
+            'type' => 'required'
         ]);
         
         return User::create([
             'name' => $request['name'],
             'email' => $request['email'],
             'password' => Hash::make($request['password']),
+            'bio' => $request['bio'],
+            'type' => $request['type'],
         ]);
         
     }
