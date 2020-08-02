@@ -21,6 +21,7 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
+
 import VueProgressBar from 'vue-progressbar'
 
 Vue.use(VueProgressBar, {
@@ -38,6 +39,9 @@ showConfirmButton: false,
 timer: 3000
 });
 window.Toast = Toast;
+
+
+
 
 
 let routes = [
@@ -62,6 +66,11 @@ const router = new VueRouter({
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
+
+
+
+
+window.Fire =  new Vue();
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 

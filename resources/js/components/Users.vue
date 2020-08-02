@@ -181,7 +181,10 @@ import Swal from 'sweetalert2';
         },
          createUser(){
                 this.$Progress.start();
-                this.form.post('api/user');
+                this.form.post('api/user')
+                .then(()=>{
+                
+                Fire.$emit('AfterCreate');
 
                 $('#addNew').modal('hide');
 
@@ -192,12 +195,17 @@ import Swal from 'sweetalert2';
                 })
 
                 this.$Progress.finish();
+
+                })
+                .catch(()=>{
+                })
         }
         
         },
         created() {
             this.loadUsers();
-            setInterval(() => this.loadUsers(), 3000);
+            Fire.$on('AfterCreate',()=>{this.loadUsers()});
+            
         }
     }
 </script>
