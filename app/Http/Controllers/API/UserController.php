@@ -14,12 +14,15 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    
+    
+  
+
     public function index()
     {
         //
         return User::latest()->paginate(5);
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -65,11 +68,22 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+   
+
     public function update(Request $request, $id)
     {
-        //
-    }
 
+        $user = User::findOrFail($id);
+
+        $this->validate($request,[
+            'name' => 'required|string|max:191',
+            'email' => 'required|string|email|max:191|unique:users,email,'.$user->id,
+            'password' => 'sometimes|min:6'
+        ]);
+
+        $user->update($request->all());
+        return ['message' => 'Updated the user info'];
+    }
     /**
      * Remove the specified resource from storage.
      *
@@ -79,5 +93,11 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+         $user = User::findOrFail($id);
+        // delete the user
+
+        $user->delete();
+
+        return ['message' => 'User Deleted'];
     }
 }
